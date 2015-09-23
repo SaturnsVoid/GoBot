@@ -12,13 +12,13 @@ Yes, I really don't know what i am doing. This is a learning experince for me. I
 
 # Current Credits and Stuff
 
-http://github.com/luisiturrios/gowin
+* http://github.com/luisiturrios/gowin
 * http://code.google.com/p/winsvc/winapi
-http://www.guidgen.com/
-https://www.reddit.com/r/golang/
-http://golang.org/pkg/net/http/
-https://github.com/golang/go/wiki/WindowsDLLs
-http://vxheaven.org/forum/index.php
+* http://www.guidgen.com/
+* https://www.reddit.com/r/golang/
+* http://golang.org/pkg/net/http/
+* https://github.com/golang/go/wiki/WindowsDLLs
+* http://vxheaven.org/forum/index.php
 
 # Other
 
