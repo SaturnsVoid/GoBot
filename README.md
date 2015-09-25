@@ -14,6 +14,7 @@ While i keep teaching myself Go, i will be updating this project. If at anytime 
 * Message Box
 * Open Website - Visable
 * Open Website - Hidden
+* Single Instance
 
 # I don't know what i am doing!
 
