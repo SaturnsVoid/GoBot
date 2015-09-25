@@ -39,7 +39,7 @@ import (
 var(
 
 //==========================================================Edit
-Panel string = "aHR0cDovLzEwNC4yMjMuMTI1LjEzNy8=" //Control Panel URL(Base64 Encoded)
+Panel string = "aHR0cDovLzEyNy4wLjAuMS8=" //Control Panel URL(Base64 Encoded)
 ReconnectTime int = 5 //Minutes
 SingleInstance bool = true //True = Only one can run, False = Mutliple can run at once
 InstanceKey string = "0f7b0fcd-d67c-43d8-b7e5-76f95da01665" //Key to detect for Single Instance http://www.guidgen.com/
