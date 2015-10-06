@@ -34,3 +34,10 @@ Yes, I really don't know what i am doing. This is a learning experince for me. I
 # Other
 
 Go is a amazing and powerful programming language. If you already haven't, check it out; https://golang.org/
+
+
+----------Update Log---------------------
+
+10/06/2015 @ 12:00PM:
+-  Changed the way the command URL is handeld
+-  Made a temporary fix for the Timer issue cousing issues with running and compiling. (woops)
