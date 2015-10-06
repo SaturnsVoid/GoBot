@@ -39,5 +39,5 @@ Go is a amazing and powerful programming language. If you already haven't, check
 ----------Update Log---------------------
 
 10/06/2015 @ 12:00PM:
--  Changed the way the command URL is handeld
+-  Changed the way the command URL is handled
 -  Made a temporary fix for the Timer issue cousing issues with running and compiling. (woops)
