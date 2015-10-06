@@ -38,7 +38,7 @@ import (
 var(
 
 //==========================================================Edit
-Panel string = "aHR0cDovLzEwNC4yMjMuMTI1LjEzNy9jbWQucGhw" //Control Panel URL(Base64 Encoded) http://127.0.0.1/cmd.php = aHR0cDovLzEyNy4wLjAuMS9jbWQucGhw
+Panel string = "aHR0cDovLzEyNy4wLjAuMS9jbWQucGhw" //Control Panel URL(Base64 Encoded) http://127.0.0.1/cmd.php = aHR0cDovLzEyNy4wLjAuMS9jbWQucGhw
 //ReconnectTime int = 5 //Minutes
 SingleInstance bool = true //True = Only one can run, False = Mutliple can run at once
 InstanceKey string = "0f7b0fcd-d67c-43d8-b7e5-76f95da01665" //Key to detect for Single Instance http://www.guidgen.com/
