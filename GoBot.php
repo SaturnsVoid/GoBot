@@ -12,5 +12,5 @@ if (isset($_GET['get']))
 elseif (isset($_GET['test']))
 	echo "ok";
 else
-	echo "The requested URL was not found on this server.\n"; 
+	echo "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n <HTML><HEAD>\n <TITLE>404 Not Found</TITLE>\n </HEAD><BODY>\n <H1>Not Found</H1>\n The requested URL was not found on this server.\n </BODY></HTML>\n";  
 ?>
