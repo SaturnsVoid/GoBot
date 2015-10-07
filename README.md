@@ -38,6 +38,9 @@ Go is a amazing and powerful programming language. If you already haven't, check
 
 ----------Update Log---------------------
 
+10/07/2015 @ 1:40PM:
+- Rewrote GoBot.php to do the basics to test that the bot works.
+
 10/06/2015 @ 12:00PM:
 -  Changed the way the command URL is handled
 -  Made a temporary fix for the Timer issue cousing issues with running and compiling. (woops)
