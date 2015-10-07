@@ -10,7 +10,7 @@ if (isset($_GET['get']))
 	//if match not found add to known bots
   echo "test";
 elseif (isset($_GET['test']))
-	echo "ok"; //Send back information on last command
+	echo "ok";
 else
 	echo "<h1>404 Page not found</h1>";
 
