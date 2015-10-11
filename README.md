@@ -56,6 +56,7 @@ Go is a amazing and powerful programming language. If you already haven't, check
 
 
 ----------Update Log---------------------
+
 10/11/2015 @ 5:15PM:
 - Rewrote how checking internet connection is done
 - New Ring3 Rootkit (https://github.com/petercunha/GoAT)
