@@ -54,6 +54,14 @@ While i keep teaching myself Go, i will be updating this project. If at anytime 
 
 Go is a amazing and powerful programming language. If you already haven't, check it out; https://golang.org/
 
+# Donations
+
+If you like my work, send me a game or item on Steam!
+
+![alt tag](https://i.imgur.com/hNIHwQE.png)
+
+http://steamcommunity.com/id/saturnsvoid
+
 
 ----------Update Log---------------------
 
