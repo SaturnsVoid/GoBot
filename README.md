@@ -6,21 +6,7 @@ GoBot is a project i am working on as i learn Go. GoBot is a PoC(Proof of Concep
 
 While i keep teaching myself Go, i will be updating this project. If at anytime someone would like to add to the project they can. Just post in the 'issues' section and i will add your code and credits to the main project.
 
-<<<<<<< HEAD
 # Current Features
-=======
-# Current Abilitys
-
-* Basic Registry and AppData install
-* Base64 Encoding/Decoding
-* Uniqe ID Generation (MD5)
-* Message Box
-* Open Website - Visable
-* Open Website - Hidden
-* Single Instance
-
-# I don't know what i am doing!
->>>>>>> origin/master
 
 * Basic Registry and AppData install
 * Base64 Encoding/Decoding
@@ -56,10 +42,7 @@ While i keep teaching myself Go, i will be updating this project. If at anytime 
 * https://github.com/golang/go/wiki/WindowsDLLs
 * http://vxheaven.org/forum/index.php
 * https://mmcgrana.github.io/2012/09/go-by-example-timers-and-tickers.html
-<<<<<<< HEAD
 * https://github.com/petercunha/GoAT
-=======
->>>>>>> origin/master
 
 # Terms of Use
 
@@ -73,7 +56,6 @@ Go is a amazing and powerful programming language. If you already haven't, check
 
 
 ----------Update Log---------------------
-<<<<<<< HEAD
 10/11/2015 @ 5:15PM:
 - Rewrote how checking internet connection is done
 - New Ring3 Rootkit (https://github.com/petercunha/GoAT)
@@ -87,8 +69,6 @@ Go is a amazing and powerful programming language. If you already haven't, check
 - New DebugLog feature
 - Code Cleaning
 - Removed Uninstall (Have to rewrite it to work with new Rootkit and Install)
-=======
->>>>>>> origin/master
 
 10/07/2015 @ 1:40PM:
 - Rewrote GoBot.php to do the basics to test that the bot works.
