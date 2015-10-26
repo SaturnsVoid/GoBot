@@ -8,7 +8,6 @@ While i keep teaching myself Go, i will be updating this project. If at anytime 
 
 # Current Features
 
-* Basic Registry and AppData install
 * Base64 Encoding/Decoding
 * Uniqe ID Generation (MD5)
 * Message Box
