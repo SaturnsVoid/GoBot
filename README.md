@@ -2,9 +2,9 @@
 
 GoBot is a project i am working on as i learn Go. GoBot is a PoC(Proof of Concept) Trojan that uses HTTP connections for commands and sending information.
 
-# Under-Development, Always
+# Development
 
-While i keep teaching myself Go, i will be updating this project. If at anytime someone would like to add to the project they can. Just post in the 'issues' section and i will add your code and credits to the main project.
+Stopped working on this; I am a vary bad coder and don't think i can do much more myself... I will continue trying to learn to code in Go though i may never work on this project again.... If ANYONE wants you can take over this project, see what Go can do.
 
 # Current Features
 
@@ -15,10 +15,10 @@ While i keep teaching myself Go, i will be updating this project. If at anytime 
 * Open Website - Visable
 * Open Website - Hidden
 * Single Instance
-* Ring3 Rootkit
+* Ring3 Rootkit (Written in C)
 * Download and Run
 * Open Program
-* Simple to use Control Panel
+* Simple to use Control Panel (PHP, HTML, SQL)
 
 # How to Build and Use
 
