@@ -61,6 +61,7 @@ If you like my work, send me a game or item on Steam!
 
 http://steamcommunity.com/id/saturnsvoid
 
+Bitcoin: 1HsopnL5VdK8XD9xvybLWAK2qTQYBp1oPT
 
 ----------Update Log---------------------
 
