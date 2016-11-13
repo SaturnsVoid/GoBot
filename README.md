@@ -62,13 +62,26 @@ Go is a amazing and powerful programming language. If you already haven't, check
 
 # Donations
 
-If you like my work, send me a game or item on Steam!
-
-![alt tag](https://i.imgur.com/hNIHwQE.png)
-
-http://steamcommunity.com/id/saturnsvoid
-
-Bitcoin: 1HsopnL5VdK8XD9xvybLWAK2qTQYBp1oPT
+<div style="font-size:16px;margin:0 auto;width:300px" class="blockchain-btn"
+     data-address="1AEbR1utjaYu3SGtBKZCLJMRR5RS7Bp7eE"
+     data-shared="false">
+    <div class="blockchain stage-begin">
+        <img src="https://blockchain.info/Resources/buttons/donate_64.png"/>
+    </div>
+    <div class="blockchain stage-loading" style="text-align:center">
+        <img src="https://blockchain.info/Resources/loading-large.gif"/>
+    </div>
+    <div class="blockchain stage-ready">
+         <p align="center">Please Donate To Bitcoin Address: <b>[[address]]</b></p>
+         <p align="center" class="qr-code"></p>
+    </div>
+    <div class="blockchain stage-paid">
+         Donation of <b>[[value]] BTC</b> Received. Thank You.
+    </div>
+    <div class="blockchain stage-error">
+        <font color="red">[[error]]</font>
+    </div>
+</div>
 
 ----------Update Log---------------------
 
