@@ -61,6 +61,8 @@ Stopped working on this; I am a vary bad coder and don't think i can do much mor
 Go is a amazing and powerful programming language. If you already haven't, check it out; https://golang.org/
 
 # Donations
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://blockchain.info/Resources/js/pay-now-button.js"></script>
 
 <div style="font-size:16px;margin:0 auto;width:300px" class="blockchain-btn"
      data-address="1AEbR1utjaYu3SGtBKZCLJMRR5RS7Bp7eE"
