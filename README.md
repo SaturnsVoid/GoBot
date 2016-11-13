@@ -1,3 +1,10 @@
+# GoBot2 Project for sale
+
+https://github.com/SaturnsVoid/GoBot-2
+https://hackforums.net/showthread.php?tid=5461294
+
+More features, better code, better everything!
+
 # GoBot
 
 GoBot is a project i am working on as i learn Go. GoBot is a PoC(Proof of Concept) Trojan that uses HTTP connections for commands and sending information.
