@@ -1,9 +1,3 @@
-# GoBot2 Project for sale
-
-https://github.com/SaturnsVoid/GoBot-2
-https://hackforums.net/showthread.php?tid=5461294
-
-More features, better code, better everything!
 
 # GoBot
 
