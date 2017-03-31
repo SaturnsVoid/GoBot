@@ -1,4 +1,6 @@
 
+# Second interation of GoBot, https://github.com/SaturnsVoid/GoBot2
+
 # GoBot
 
 GoBot is a project i am working on as i learn Go. GoBot is a PoC(Proof of Concept) Trojan that uses HTTP connections for commands and sending information.
